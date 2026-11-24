@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 )
 
 const (
@@ -19,7 +19,7 @@ const (
 )
 
 func DownloadVectorMapDistrict() error {
-	var funcName string = "osdata.DownloadVectorMapDistrict"
+	funcName := "osdata.DownloadVectorMapDistrict"
 
 	var tiles []VectorMapDistrictTile
 
@@ -77,11 +77,11 @@ func DownloadVectorMapDistrict() error {
 }
 
 func doDownloadJob(tiles []VectorMapDistrictTile) error {
-	var funcName string = "osdata.doDownloadJob"
-	var jobName string = "Downloading OSData Source Files"
+	funcName := "osdata.doDownloadJob"
+	jobName := "Downloading OSData Source Files"
 
-	var magnitude int = len(tiles)
-	var start time.Time = time.Now()
+	magnitude := len(tiles)
+	start := time.Now()
 	var took time.Duration
 
 	if magnitude > 0 {
@@ -109,11 +109,11 @@ func doDownloadJob(tiles []VectorMapDistrictTile) error {
 }
 
 func doUnzipJob(tiles []VectorMapDistrictTile) error {
-	var funcName string = "osdata.doUnzipJob"
-	var jobName string = "Unzipping OSData Source Files"
+	funcName := "osdata.doUnzipJob"
+	jobName := "Unzipping OSData Source Files"
 
-	var magnitude int = len(tiles)
-	var start time.Time = time.Now()
+	magnitude := len(tiles)
+	start := time.Now()
 	var took time.Duration
 
 	if magnitude > 0 {
@@ -140,7 +140,7 @@ func doUnzipJob(tiles []VectorMapDistrictTile) error {
 }
 
 func getDownloadList() ([]VectorMapDistrictTile, error) {
-	var funcName string = "osdata.getDownloadList"
+	funcName := "osdata.getDownloadList"
 
 	var tiles = []VectorMapDistrictTile{}
 
@@ -174,7 +174,7 @@ func getDownloadList() ([]VectorMapDistrictTile, error) {
 }
 
 func filterDownloadList(downloadList []VectorMapDistrictTile) []VectorMapDistrictTile {
-	var funcName string = "osdata.filterDownloadList"
+	funcName := "osdata.filterDownloadList"
 
 	filteredDownloadList := []VectorMapDistrictTile{}
 
@@ -215,7 +215,7 @@ func filterDownloadList(downloadList []VectorMapDistrictTile) []VectorMapDistric
 }
 
 func prepFolders() error {
-	var funcName string = "osdata.prepFolders"
+	funcName := "osdata.prepFolders"
 
 	err := fileutils.MkDir(zipDir)
 	if err != nil {

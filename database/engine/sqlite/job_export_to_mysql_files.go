@@ -1,14 +1,15 @@
 package sqlite
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 	"strings"
 
-	"github.com/rockwell-uk/csync/mutex"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/csync/mutex"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-progress/progress"
 
 	"go-uk-maps-import/database/types"
 	"go-uk-maps-import/osdata"
@@ -56,7 +57,7 @@ func (j *ExportToMySQLFilesJob) Run(job *progress.Job, input interface{}) (inter
 				if logger.Vbs == logger.LVL_INTERNAL {
 					countQuery := fmt.Sprintf("SELECT COUNT(*) FROM %v", tableName)
 					var numRows int
-					row := db.QueryRow(countQuery)
+					row := db.QueryRowContext(context.Background(), countQuery)
 					err := row.Scan(&numRows)
 					if err != nil {
 						return struct{}{}, err

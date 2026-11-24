@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/database"
 	"go-uk-maps-import/database/engine"
@@ -16,8 +16,8 @@ import (
 )
 
 func Run(start time.Time, config Config) error {
-	var funcName string = "runner.Run"
-	var importStart time.Time = time.Now()
+	funcName := "runner.Run"
+	importStart := time.Now()
 
 	if config.UseFiles {
 		// Start SQL Writer
@@ -150,11 +150,11 @@ func Run(start time.Time, config Config) error {
 	rates.LogMaxRate(config.TimingsLog, rateInfo)
 
 	// Calculate and log actual rate
-	var duration time.Duration = time.Since(importStart)
+	duration := time.Since(importStart)
 	rates.LogActualRate(config.TimingsLog, rateInfo, duration)
 
 	// Log import time
-	var took time.Duration = timeutils.Took(importStart)
+	took := timeutils.Took(importStart)
 	logger.Log(
 		logger.LVL_APP,
 		fmt.Sprintf("Import took %v", took),

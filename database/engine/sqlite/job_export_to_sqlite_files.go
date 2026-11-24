@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
 	"github.com/schollz/sqlite3dump"
 
 	"go-uk-maps-import/database/types"

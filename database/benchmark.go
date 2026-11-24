@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-sqlbench/benchmark"
+	"github.com/db-tech-uk/go-utils/timeutils"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-sqlbench/benchmark"
-	"github.com/rockwell-uk/go-utils/timeutils"
 )
 
 func Benchmark(db *sqlx.DB, dbDisplayName, tableParams string, numRows int) benchmark.BenchmarkResult {
@@ -22,10 +22,10 @@ func Benchmark(db *sqlx.DB, dbDisplayName, tableParams string, numRows int) benc
 }
 
 func warmupEngine(db *sqlx.DB, dbDisplayName string) error {
-	var funcName string = "database.warmupEngine"
-	var taskName string = fmt.Sprintf("Warming up %v", dbDisplayName)
+	funcName := "database.warmupEngine"
+	taskName := fmt.Sprintf("Warming up %v", dbDisplayName)
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 
 	logger.Log(
@@ -52,9 +52,9 @@ func warmupEngine(db *sqlx.DB, dbDisplayName string) error {
 }
 
 func runBenchmark(db *sqlx.DB, dbDisplayName, tableParams string, numRows int) benchmark.BenchmarkResult {
-	var taskName string = fmt.Sprintf("Benchmarking %v", dbDisplayName)
+	taskName := fmt.Sprintf("Benchmarking %v", dbDisplayName)
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 
 	logger.Log(

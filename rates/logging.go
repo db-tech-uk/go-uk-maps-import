@@ -5,13 +5,13 @@ import (
 	"io"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-logger/logger"
 
 	"go-uk-maps-import/filelogger"
 )
 
 func LogRecordsProcessed(logFile io.Writer, rateInfo []RateInfo) {
-	var processed int = CalcRecordsProcessed(rateInfo)
+	processed := CalcRecordsProcessed(rateInfo)
 
 	logger.Log(
 		logger.LVL_APP,
@@ -43,7 +43,7 @@ func LogRowsGenerated(logFile io.Writer, rateInfo []RateInfo) {
 }
 
 func LogAvgRate(logFile io.Writer, rateInfo []RateInfo) {
-	var avgRate int = CalcAvgRate(rateInfo)
+	avgRate := CalcAvgRate(rateInfo)
 
 	logger.Log(
 		logger.LVL_APP,
@@ -59,7 +59,7 @@ func LogAvgRate(logFile io.Writer, rateInfo []RateInfo) {
 }
 
 func LogActualRate(logFile io.Writer, rateInfo []RateInfo, duration time.Duration) {
-	var actualRate int = CalcActualRate(rateInfo, duration)
+	actualRate := CalcActualRate(rateInfo, duration)
 
 	logger.Log(
 		logger.LVL_APP,
@@ -75,7 +75,7 @@ func LogActualRate(logFile io.Writer, rateInfo []RateInfo, duration time.Duratio
 }
 
 func LogMaxRate(logFile io.Writer, rateInfo []RateInfo) {
-	var actualRate int = CalcMaxRate(rateInfo)
+	actualRate := CalcMaxRate(rateInfo)
 
 	logger.Log(
 		logger.LVL_APP,

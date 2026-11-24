@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 )
 
 type RateInfo struct {
@@ -30,8 +30,8 @@ func (r RateInfo) Avg() float64 {
 }
 
 func (r RateInfo) Rate() string {
-	var rate float64 = r.Avg()
-	var rateStr string = fmt.Sprintf("%v", int64(rate))
+	rate := r.Avg()
+	rateStr := fmt.Sprintf("%v", int64(rate))
 
 	if rate < 1 {
 		rateStr = fmt.Sprintf("%.2f", rate)
@@ -41,7 +41,7 @@ func (r RateInfo) Rate() string {
 }
 
 func (r RateInfo) Durn() string {
-	var precision int = 2
+	precision := 2
 
 	if r.Duration.Seconds() < 1 {
 		precision = 3

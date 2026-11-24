@@ -1,12 +1,13 @@
 package autoconfig
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-sqlbench/benchmark"
+	"github.com/db-tech-uk/go-utils/osutils"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-sqlbench/benchmark"
-	"github.com/rockwell-uk/go-utils/osutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/engine/mysql"
@@ -43,9 +44,9 @@ func GetMySQLDetails(config importer.Config) MySQLDetails {
 
 	cfg := GetMySQLConfig(config.DB)
 
-	var driverInstalled bool = checkMySQLDriverInstalled()
-	var clientInstalled bool = checkMySQLClientInstalled()
-	var canConnect bool = checkMySQLConnectivity(cfg)
+	driverInstalled := checkMySQLDriverInstalled()
+	clientInstalled := checkMySQLClientInstalled()
+	canConnect := checkMySQLConnectivity(cfg)
 	var connectionError *string
 
 	if driverInstalled && clientInstalled && canConnect {
@@ -93,14 +94,14 @@ func GetMySQLConfig(userConfig engine.SEConfig) mysql.MySQLConfig {
 }
 
 func connectMySQL(dbConfig mysql.MySQLConfig) (*sqlx.DB, error) {
-	var funcName string = "autoconfig.connectMySQL"
+	funcName := "autoconfig.connectMySQL"
 
 	db, err := sqlx.Open(engine.EngineMySQL, dbConfig.DSN())
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}
 
-	err = db.Ping()
+	err = db.PingContext(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}

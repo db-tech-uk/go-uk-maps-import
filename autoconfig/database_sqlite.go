@@ -1,16 +1,17 @@
 package autoconfig
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-sqlbench/benchmark"
+	"github.com/db-tech-uk/go-utils/fileutils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/mattn/go-sqlite3"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-sqlbench/benchmark"
-	"github.com/rockwell-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/engine/sqlite"
@@ -53,10 +54,10 @@ func GetSQLiteDetails(config importer.Config) SQLiteDetails {
 
 	cfg := GetSQLiteConfig(config.DB)
 
-	var driverInstalled bool = checkSQLiteInstalled()
-	var spatialiteInstalled bool = checkSpatialiteInstalled()
-	var folderWriteable bool = checkSQLiteFolderWriteable()
-	var canConnect bool = checkSQLiteConnectivity(defaultDriverName)
+	driverInstalled := checkSQLiteInstalled()
+	spatialiteInstalled := checkSpatialiteInstalled()
+	folderWriteable := checkSQLiteFolderWriteable()
+	canConnect := checkSQLiteConnectivity(defaultDriverName)
 	var connectionError *string
 
 	if driverInstalled && spatialiteInstalled && folderWriteable && canConnect {
@@ -66,7 +67,7 @@ func GetSQLiteDetails(config importer.Config) SQLiteDetails {
 
 		config.DB.StorageEngine = se
 
-		var benchDBFile string = se.GetDatabasePath("bench")
+		benchDBFile := se.GetDatabasePath("bench")
 		db, err := connectSQLite(spatialiteDriverName, benchDBFile)
 		if err != nil {
 			errString := err.Error()
@@ -90,14 +91,14 @@ func GetSQLiteConfig(userConfig engine.SEConfig) sqlite.SQLiteConfig {
 }
 
 func connectSQLite(driverName, dbFile string) (*sqlx.DB, error) {
-	var funcName string = "autoconfig.connectSQLite"
+	funcName := "autoconfig.connectSQLite"
 
 	db, err := sqlx.Connect(driverName, dbFile)
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}
 
-	err = db.Ping()
+	err = db.PingContext(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}

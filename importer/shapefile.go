@@ -7,15 +7,15 @@ import (
 	"math"
 	"time"
 
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/stringutils"
+	"github.com/db-tech-uk/shapefile"
+	"github.com/db-tech-uk/shapefile/dbf"
+	"github.com/db-tech-uk/shapefile/shp"
+	"github.com/db-tech-uk/uiprogress"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/stringutils"
-	"github.com/rockwell-uk/shapefile"
-	"github.com/rockwell-uk/shapefile/dbf"
-	"github.com/rockwell-uk/shapefile/shp"
-	"github.com/rockwell-uk/uiprogress"
 	"github.com/twpayne/go-geos"
 
 	"go-uk-maps-import/database"
@@ -75,8 +75,8 @@ func init() {
 }
 
 func doImportShapefile(config Config, shapeFile, sfShortName string) (int, map[string]int, time.Duration, error) {
-	var funcName string = "importer.doImportShapefile"
-	var jobName string = "Importing shapefile"
+	funcName := "importer.doImportShapefile"
+	jobName := "Importing shapefile"
 
 	var importStarted = time.Now()
 	var sfRowsGenerated = make(map[string]int)
@@ -84,7 +84,7 @@ func doImportShapefile(config Config, shapeFile, sfShortName string) (int, map[s
 	var recordsProcessed int
 
 	// One context per shapefile
-	var gctx *geos.Context = geos.NewContext()
+	gctx := geos.NewContext()
 
 	logger.Log(
 		logger.LVL_DEBUG,
@@ -136,12 +136,12 @@ func doImportShapefile(config Config, shapeFile, sfShortName string) (int, map[s
 		}
 	}()
 
-	var magnitude int = int(math.Ceil(float64(recordsInFile) / float64(barInterval)))
-	var wg *waitgroup.WaitGroup = waitgroup.New()
+	magnitude := int(math.Ceil(float64(recordsInFile) / float64(barInterval)))
+	wg := waitgroup.New()
 
 	var job *progress.Job
 	var task *progress.Task
-	var showBar bool = logger.Vbs == logger.LVL_APP && !config.Unlimited && !config.IsTest
+	showBar := logger.Vbs == logger.LVL_APP && !config.Unlimited && !config.IsTest
 	var currentChunk int
 
 	// Progress bar
@@ -180,8 +180,8 @@ func doImportShapefile(config Config, shapeFile, sfShortName string) (int, map[s
 	for {
 		rec, err := r.Next()
 
-		var shouldLogRate bool = recordsProcessed > 0 && recordsProcessed%rateInterval == 0
-		var shouldUpdateBar bool = recordsProcessed > 0 && recordsProcessed%barInterval == 0
+		shouldLogRate := recordsProcessed > 0 && recordsProcessed%rateInterval == 0
+		shouldUpdateBar := recordsProcessed > 0 && recordsProcessed%barInterval == 0
 
 		if err == nil {
 			if recordsProcessed > 0 {
@@ -279,7 +279,7 @@ func mergeRowsGenerated(source map[string]int, dest map[string]int) map[string]i
 }
 
 func getInsert(rec *shapefile.Record, fields []*dbf.Field) insert {
-	var record insert = insert{}
+	record := insert{}
 
 	for i, field := range fields {
 		value := rec.Attr(i)
@@ -311,7 +311,7 @@ func getRate(diff time.Duration, recordsProcessed int) float64 {
 
 func logRate(sfShortName string, importStarted time.Time, recordsProcessed int) (float64, string) {
 	duration := time.Since(importStarted)
-	var rate float64 = getRate(duration, recordsProcessed)
+	rate := getRate(duration, recordsProcessed)
 	rateLogLine := formatRateLogLine(sfShortName, duration, recordsProcessed)
 
 	return rate, rateLogLine

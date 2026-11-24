@@ -1,5 +1,6 @@
 package types
 
+//nolint:goconst
 var FieldTypes = map[string]string{
 	"ID":         "varchar(36) NOT NULL",
 	"GRIDREF":    "smallint NOT NULL",

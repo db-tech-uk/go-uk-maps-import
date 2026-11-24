@@ -3,20 +3,22 @@ package engine
 import (
 	"fmt"
 	"os"
-	"os/exec"
+	"slices"
 	"strings"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/osutils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/osutils"
 
 	"go-uk-maps-import/database/engine/mysql"
 	"go-uk-maps-import/database/engine/pgsql"
 	"go-uk-maps-import/database/engine/sqlite"
 )
+
+const nilPlaceholder = "<nil>"
 
 var (
 	EngineMySQL    = "mysql"
@@ -44,22 +46,22 @@ type DBConfig struct {
 }
 
 func (c DBConfig) String() string {
-	var host string = "<nil>"
+	host := nilPlaceholder
 	if c.Host != nil {
 		host = *c.Host
 	}
 
-	var port string = "<nil>"
+	port := nilPlaceholder
 	if c.Port != nil {
 		port = *c.Port
 	}
 
-	var user string = "<nil>"
+	user := nilPlaceholder
 	if c.User != nil {
 		user = *c.User
 	}
 
-	var schema string = "<nil>"
+	schema := nilPlaceholder
 	if c.Schema != nil {
 		schema = *c.Schema
 	}
@@ -104,7 +106,7 @@ type SEConfig struct {
 }
 
 func (c SEConfig) String() string {
-	var engine string = "<nil>"
+	engine := nilPlaceholder
 	if c.Engine != nil {
 		engine = fmt.Sprintf("%v", *c.Engine)
 	}
@@ -119,7 +121,7 @@ func (c SEConfig) String() string {
 }
 
 func Startup(dryrun bool, config *SEConfig) error {
-	var funcName string = "engine.Startup"
+	funcName := "engine.Startup"
 
 	if !dryrun {
 		e, err := start(config)
@@ -133,7 +135,7 @@ func Startup(dryrun bool, config *SEConfig) error {
 }
 
 func Shutdown(dryrun bool, config SEConfig) error {
-	var funcName string = "engine.Shutdown"
+	funcName := "engine.Shutdown"
 
 	if !dryrun {
 		err := config.StorageEngine.Stop()
@@ -147,7 +149,7 @@ func Shutdown(dryrun bool, config SEConfig) error {
 
 //nolint:ireturn,nolintlint
 func start(config *SEConfig) (StorageEngine, error) {
-	var funcName string = "engine.start"
+	funcName := "engine.start"
 	var e StorageEngine
 
 	switch *config.Engine {
@@ -210,10 +212,10 @@ func start(config *SEConfig) (StorageEngine, error) {
 }
 
 func DoInserts(dbConfig DBConfig, sqlFiles []string) error {
-	var funcName string = "engine.DoInserts"
-	var jobName string = "Inserting data to the db"
+	funcName := "engine.DoInserts"
+	jobName := "Inserting data to the db"
 
-	var magnitude int = len(sqlFiles)
+	magnitude := len(sqlFiles)
 
 	// Do Inserts Job
 	var job progress.ProgressJob = &DoInsertsJob{}
@@ -222,7 +224,7 @@ func DoInserts(dbConfig DBConfig, sqlFiles []string) error {
 }
 
 func RunSQLFileDirect(config SEConfig, sqlFile string) (string, error) {
-	var funcName string = "engine.RunSQLFileDirect"
+	funcName := "engine.RunSQLFileDirect"
 
 	logger.Log(
 		logger.LVL_DEBUG,
@@ -267,27 +269,29 @@ func RunSQLFile(config DBConfig, sqlFile string) (string, string, error) {
 		fmt.Sprintf("source %v", sqlFile),
 	}
 
+	// don't write the password to the log
+	logArgs := slices.Clone(args)
+	if i := slices.Index(logArgs, fmt.Sprintf("-p%v", config.Pass)); i >= 0 {
+		logArgs[i] = "-p****"
+	}
+
 	logger.Log(
 		logger.LVL_DEBUG,
-		fmt.Sprintf("Running command: %s", exec.Command(command, args...)),
+		fmt.Sprintf("Running command: %s %s", command, strings.Join(logArgs, " ")),
 	)
 
 	return osutils.RunCommandSilent(command, args...)
 }
 
 func RunSQLFileWithShell(shell string, config DBConfig, sqlFile string) (string, string, error) {
-	command := fmt.Sprintf("mysql --connect-timeout 10 -h%v -P %v -u %v -p%v %v < %v",
-		config.Host,
-		config.Port,
-		config.User,
-		config.Pass,
-		config.Schema,
-		sqlFile,
-	)
+	const tpl = "mysql --connect-timeout 10 -h%v -P %v -u %v -p%v %v < %v"
 
+	command := fmt.Sprintf(tpl, config.Host, config.Port, config.User, config.Pass, config.Schema, sqlFile)
+
+	// don't write the password to the log
 	logger.Log(
 		logger.LVL_DEBUG,
-		fmt.Sprintf("Running command: %s", command),
+		fmt.Sprintf("Running command: %s", fmt.Sprintf(tpl, config.Host, config.Port, config.User, "****", config.Schema, sqlFile)),
 	)
 
 	return osutils.RunShellCommand(shell, command)

@@ -6,16 +6,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rockwell-uk/csync/mutex"
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/sliceutils"
-	"github.com/rockwell-uk/go-utils/stringutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
-	"github.com/rockwell-uk/shapefile"
-	"github.com/rockwell-uk/uiprogress"
+	"github.com/db-tech-uk/csync/mutex"
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/sliceutils"
+	"github.com/db-tech-uk/go-utils/stringutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/shapefile"
+	"github.com/db-tech-uk/uiprogress"
 
 	"go-uk-maps-import/rates"
 )
@@ -26,10 +26,10 @@ var (
 )
 
 func doImport(config Config) ([]rates.RateInfo, error) {
-	var funcName string = "importer.doImport"
-	var jobName string = "Import"
+	funcName := "importer.doImport"
+	jobName := "Import"
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 
 	// Sequential
@@ -179,7 +179,7 @@ func doImport(config Config) ([]rates.RateInfo, error) {
 }
 
 func fanout(config Config, job *progress.Job, shapeFiles []string) {
-	var wg *waitgroup.WaitGroup = waitgroup.New()
+	wg := waitgroup.New()
 
 	// Start progressbar if needed
 	if progress.ShouldShowBar() && !config.Unlimited {
@@ -217,7 +217,7 @@ func fanout(config Config, job *progress.Job, shapeFiles []string) {
 }
 
 func sequential(config Config, job *progress.Job, shapeFiles []string) error {
-	var funcName string = "importer.sequential"
+	funcName := "importer.sequential"
 
 	// Start progressbar if needed
 	if progress.ShouldShowBar() && !config.Unlimited {
@@ -255,7 +255,7 @@ func sequential(config Config, job *progress.Job, shapeFiles []string) error {
 }
 
 func GetAllShapefiles(dataFolder string) ([]string, error) {
-	var funcName string = "importer.GetAllShapefiles"
+	funcName := "importer.GetAllShapefiles"
 
 	// Check that the folder exists - (this should already be checked in configcheck)
 	if !fileutils.FileExists(dataFolder) {
@@ -288,7 +288,7 @@ func GetAllShapefiles(dataFolder string) ([]string, error) {
 }
 
 func getShapefilesInFolder(dataFolder string) ([]string, error) {
-	var funcName string = "importer.getShapefiles"
+	funcName := "importer.getShapefiles"
 
 	shapeFiles, err := fileutils.Find(dataFolder, ".shp")
 	if err != nil {
@@ -299,7 +299,7 @@ func getShapefilesInFolder(dataFolder string) ([]string, error) {
 }
 
 func importShapefile(config Config, shapeFile string) error {
-	var funcName string = "importer.importShapefile"
+	funcName := "importer.importShapefile"
 
 	sfShortName := filepath.Base(shapeFile)
 
@@ -329,7 +329,7 @@ func importShapefile(config Config, shapeFile string) error {
 
 func listFiles(fileDesc string, dataFolder string, files []string) string {
 	var list string
-	var shortNames []string = make([]string, len(files))
+	shortNames := make([]string, len(files))
 
 	n := len(files)
 

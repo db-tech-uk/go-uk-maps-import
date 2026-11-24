@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/mattn/go-sqlite3"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/database/types"
 )
@@ -53,8 +53,8 @@ type SQLite struct {
 }
 
 func (e *SQLite) Connect() error {
-	var funcName string = "sqlite.Connect"
-	var jobName string = "Connecting SQLite Databases"
+	funcName := "sqlite.Connect"
+	jobName := "Connecting SQLite Databases"
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -101,10 +101,10 @@ func (e *SQLite) Connect() error {
 }
 
 func (e SQLite) Cleardown() error {
-	var funcName string = "sqlite.Cleardown"
-	var jobName string = "Cleardown SQLite Database"
+	funcName := "sqlite.Cleardown"
+	jobName := "Cleardown SQLite Database"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Cleardown Job
 	var job progress.ProgressJob = &ClearDownJob{}
@@ -113,7 +113,7 @@ func (e SQLite) Cleardown() error {
 }
 
 func (e SQLite) Prepare() error {
-	var funcName string = "sqlite.Prepare"
+	funcName := "sqlite.Prepare"
 
 	err := e.CreateTables()
 	if err != nil {
@@ -124,10 +124,10 @@ func (e SQLite) Prepare() error {
 }
 
 func (e SQLite) CreateTables() error {
-	var funcName string = "sqlite.CreateTables"
-	var jobName string = "Creating SQLite Tables"
+	funcName := "sqlite.CreateTables"
+	jobName := "Creating SQLite Tables"
 
-	var magnitude int = len(types.MapLayers) * len(nationalgrid.NationalGridSquares)
+	magnitude := len(types.MapLayers) * len(nationalgrid.NationalGridSquares)
 
 	// Create Tables Job
 	var job progress.ProgressJob = &CreateTablesJob{}
@@ -140,10 +140,10 @@ func (e SQLite) GetDB(layerType string) *sqlx.DB {
 }
 
 func (e SQLite) InMemoryToFiles() error {
-	var funcName string = "sqlite.InMemoryToFiles"
-	var jobName string = "Writing SQLite in memory databases to files"
+	funcName := "sqlite.InMemoryToFiles"
+	jobName := "Writing SQLite in memory databases to files"
 
-	var magnitude int = len(driverConns)
+	magnitude := len(driverConns)
 
 	// In Memory To Files Job
 	var job progress.ProgressJob = &InMemoryToFilesJob{}
@@ -161,7 +161,7 @@ func (e SQLite) InMemoryToFiles() error {
 }
 
 func (e SQLite) SwitchToFiles() error {
-	var funcName string = "sqlite.SwitchToFiles"
+	funcName := "sqlite.SwitchToFiles"
 
 	e.dbs = make(map[string]*sqlx.DB)
 

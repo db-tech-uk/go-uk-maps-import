@@ -1,24 +1,23 @@
-//nolint:gci
 package database
 
 import (
 	"fmt"
 	"strings"
 
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-progress/progress"
+
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/types"
-
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-progress/progress"
 )
 
 type TableCountsJob struct{}
 
 func (j *TableCountsJob) Setup(jobName string, input interface{}) (*progress.Job, error) {
-	var tasks []*progress.Task
-	for layerType := range types.MapLayers.Ordered() {
+	tasks := make([]*progress.Task, 0, len(types.MapLayers)*len(nationalgrid.NationalGridSquares))
+	for _, layerType := range types.MapLayers.Ordered() {
 		for square := range nationalgrid.NationalGridSquares {
 			tasks = append(tasks, &progress.Task{
 				ID:        fmt.Sprintf("%v_%v", layerType, square),

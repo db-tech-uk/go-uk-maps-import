@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/database/types"
 )

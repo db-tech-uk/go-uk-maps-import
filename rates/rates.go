@@ -40,7 +40,7 @@ func CalcMaxRate(ratesInfo []RateInfo) int {
 	var maxRate float64
 
 	for _, rateInfo := range ratesInfo {
-		var rate float64 = calcRate(rateInfo)
+		rate := calcRate(rateInfo)
 		if rate > maxRate {
 			maxRate = calcRate(rateInfo)
 		}
@@ -56,7 +56,7 @@ func CalcActualRate(ratesInfo []RateInfo, duration time.Duration) int {
 }
 
 func calcRate(rateInfo RateInfo) float64 {
-	var records int = rateInfo.Records
+	records := rateInfo.Records
 
 	return float64(records) / float64(rateInfo.Duration) * float64(time.Second)
 }

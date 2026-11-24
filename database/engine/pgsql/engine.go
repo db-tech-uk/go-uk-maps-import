@@ -1,15 +1,13 @@
-//nolint:gci
 package pgsql
 
 import (
 	"fmt"
 	"time"
 
-	_ "github.com/lib/pq"
-
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
+	_ "github.com/lib/pq"
 
 	"go-uk-maps-import/database/types"
 )
@@ -60,8 +58,8 @@ type PgSQL struct {
 }
 
 func (e *PgSQL) Connect() error {
-	var funcName string = "pgsql.Connect"
-	var taskName string = "Connecting to PgSQL database"
+	funcName := "pgsql.Connect"
+	taskName := "Connecting to PgSQL database"
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -94,10 +92,10 @@ func (e *PgSQL) Connect() error {
 }
 
 func (e PgSQL) Cleardown() error {
-	var funcName string = "pgsql.Cleardown"
-	var jobName string = "Cleardown PgSQL Database"
+	funcName := "pgsql.Cleardown"
+	jobName := "Cleardown PgSQL Database"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Cleardown Job
 	var job progress.ProgressJob = &ClearDownJob{}
@@ -106,7 +104,7 @@ func (e PgSQL) Cleardown() error {
 }
 
 func (e PgSQL) Prepare() error {
-	var funcName string = "pgsql.Prepare"
+	funcName := "pgsql.Prepare"
 
 	err := e.CreateDatabases()
 	if err != nil {
@@ -122,10 +120,10 @@ func (e PgSQL) Prepare() error {
 }
 
 func (e PgSQL) CreateDatabases() error {
-	var funcName string = "pgsql.CreateDatabases"
-	var jobName string = "Creating PgSQL Databases"
+	funcName := "pgsql.CreateDatabases"
+	jobName := "Creating PgSQL Databases"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Create Databases Job
 	var job progress.ProgressJob = &CreateDatabasesJob{}
@@ -134,10 +132,10 @@ func (e PgSQL) CreateDatabases() error {
 }
 
 func (e PgSQL) CreateTables() error {
-	var funcName string = "pgsql.CreateTables"
-	var jobName string = "Creating PgSQL Tables"
+	funcName := "pgsql.CreateTables"
+	jobName := "Creating PgSQL Tables"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Create Tables Job
 	var job progress.ProgressJob = &CreateTablesJob{}

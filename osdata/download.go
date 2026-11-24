@@ -3,15 +3,16 @@ package osdata
 import (
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/stringutils"
-	"github.com/rockwell-uk/uiprogress"
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/stringutils"
+	"github.com/db-tech-uk/uiprogress"
 )
 
 type WriteCounter struct {
@@ -22,19 +23,26 @@ type WriteCounter struct {
 func (wc *WriteCounter) Write(p []byte) (int, error) {
 	n := len(p)
 	wc.Total += uint64(n)
-	wc.Job.SetBar(int(wc.Total))
+
+	// clamp rather than overflow; SetBar takes an int
+	bar := math.MaxInt
+	if wc.Total < math.MaxInt {
+		bar = int(wc.Total)
+	}
+
+	wc.Job.SetBar(bar)
 	return n, nil
 }
 
 func downloadTile(tile VectorMapDistrictTile) error {
-	var funcName string = "osdata.downloadTile"
+	funcName := "osdata.downloadTile"
 
-	var magnitude int = tile.Size
-	var fileName string = tile.FileName
-	var wg *waitgroup.WaitGroup = waitgroup.New()
-	var units string = "mb"
-	var out string = fmt.Sprintf("%v/%v", zipDir, tile.FileName)
-	var fileSize float64 = fileutils.ByteSizeConvert(int64(magnitude), units)
+	magnitude := tile.Size
+	fileName := tile.FileName
+	wg := waitgroup.New()
+	units := "mb"
+	out := fmt.Sprintf("%v/%v", zipDir, tile.FileName)
+	fileSize := fileutils.ByteSizeConvert(int64(magnitude), units)
 
 	logger.Log(
 		logger.LVL_DEBUG,
@@ -59,7 +67,7 @@ func downloadTile(tile VectorMapDistrictTile) error {
 		job.Bar = uiprogress.AddBar(magnitude).PrependCompleted()
 		job.Bar.AppendFunc(func(b *uiprogress.Bar) string {
 			status, _ := job.GetStatus()
-			var taskName string = fmt.Sprintf("%v %.2f%v", fileName, fileSize, units)
+			taskName := fmt.Sprintf("%v %.2f%v", fileName, fileSize, units)
 			return fmt.Sprintf("%s [%s]", stringutils.SpacePadRight(taskName, 22), status)
 		})
 		defer job.End(false)
@@ -106,9 +114,9 @@ func downloadTile(tile VectorMapDistrictTile) error {
 }
 
 func download(filepath string, url string, counter *WriteCounter) error {
-	var funcName string = "osdata.download"
+	funcName := "osdata.download"
 
-	var tmpFile string = fmt.Sprintf("%v%v", filepath, ".tmp")
+	tmpFile := fmt.Sprintf("%v%v", filepath, ".tmp")
 
 	out, err := os.Create(tmpFile)
 	if err != nil {

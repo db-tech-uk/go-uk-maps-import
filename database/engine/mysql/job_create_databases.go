@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-progress/progress"
 
 	"go-uk-maps-import/database/types"
 )

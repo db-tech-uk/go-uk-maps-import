@@ -20,6 +20,7 @@ func (l LayerTypes) Ordered() []string {
 	return keys
 }
 
+//nolint:goconst
 var MapLayers = LayerTypes{
 	"administrative_boundary":       {"ID", "GRIDREF", "CLASSIFICA", "FEATCODE"},
 	"building":                      {"ID", "GRIDREF", "FEATCODE"},

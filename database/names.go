@@ -3,14 +3,14 @@ package database
 import (
 	"strings"
 
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/stringutils"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/stringutils"
 )
 
 func GetDBNameFromFilename(filename string) string {
 	var res string
 
-	var file string = fileutils.FileNameWithoutExtension(filename)
+	file := fileutils.FileNameWithoutExtension(filename)
 	p := strings.Split(file, "_")
 
 	for i := 1; i < len(p); i++ {
@@ -24,7 +24,7 @@ func GetDBNameFromFilename(filename string) string {
 }
 
 func GetSquareFilename(filename string) string {
-	var file string = fileutils.FileNameWithoutExtension(filename)
+	file := fileutils.FileNameWithoutExtension(filename)
 
 	p := strings.Split(file, "_")
 

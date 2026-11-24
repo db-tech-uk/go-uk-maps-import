@@ -9,18 +9,18 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/stringutils"
-	"github.com/rockwell-uk/uiprogress"
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/stringutils"
+	"github.com/db-tech-uk/uiprogress"
 )
 
 func unzipTile(tile VectorMapDistrictTile) error {
-	var funcName string = "osdata.unzipTile"
+	funcName := "osdata.unzipTile"
 
-	var destFolder string = fmt.Sprintf("%v/%v", shpDir, tile.Area)
+	destFolder := fmt.Sprintf("%v/%v", shpDir, tile.Area)
 
 	logger.Log(
 		logger.LVL_DEBUG,
@@ -34,8 +34,8 @@ func unzipTile(tile VectorMapDistrictTile) error {
 		}
 	}
 
-	var folderWithinZip string = fmt.Sprintf("OS VectorMap District (ESRI Shape File) %v/data/", tile.Area)
-	var zipFile string = fmt.Sprintf("%v/%v", zipDir, tile.FileName)
+	folderWithinZip := fmt.Sprintf("OS VectorMap District (ESRI Shape File) %v/data/", tile.Area)
+	zipFile := fmt.Sprintf("%v/%v", zipDir, tile.FileName)
 	var archive *zip.ReadCloser
 
 	archive, err := zip.OpenReader(zipFile)
@@ -44,9 +44,9 @@ func unzipTile(tile VectorMapDistrictTile) error {
 	}
 	defer archive.Close()
 
-	var magnitude int = getFileCount(archive, folderWithinZip)
-	var fileName string = tile.FileName
-	var wg *waitgroup.WaitGroup = waitgroup.New()
+	magnitude := getFileCount(archive, folderWithinZip)
+	fileName := tile.FileName
+	wg := waitgroup.New()
 
 	logger.Log(
 		logger.LVL_DEBUG,
@@ -71,7 +71,7 @@ func unzipTile(tile VectorMapDistrictTile) error {
 		job.Bar = uiprogress.AddBar(magnitude).PrependCompleted()
 		job.Bar.AppendFunc(func(b *uiprogress.Bar) string {
 			status, _ := job.GetStatus()
-			var taskName string = fmt.Sprintf("%v %v files", fileName, magnitude)
+			taskName := fmt.Sprintf("%v %v files", fileName, magnitude)
 			return fmt.Sprintf("%s [%s]", stringutils.SpacePadRight(taskName, 22), status)
 		})
 
@@ -115,7 +115,7 @@ func unzipTile(tile VectorMapDistrictTile) error {
 }
 
 func unzip(dst string, zipfile string, folderWithinZip string, j *progress.Job) error {
-	var funcName string = "osdata.unzip"
+	funcName := "osdata.unzip"
 
 	var archive *zip.ReadCloser
 

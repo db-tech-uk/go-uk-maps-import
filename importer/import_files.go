@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/db-tech-uk/csync/mutex"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-shpconvert/shpconvert"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/rockwell-uk/csync/mutex"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-shpconvert/shpconvert"
 	"github.com/twpayne/go-geos"
 
 	"go-uk-maps-import/sqlwriter"

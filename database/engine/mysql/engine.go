@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
 
 	"go-uk-maps-import/database/types"
 )
@@ -58,8 +58,8 @@ type MySQL struct {
 }
 
 func (e *MySQL) Connect() error {
-	var funcName string = "mysql.Connect"
-	var taskName string = "Connecting to MySQL database"
+	funcName := "mysql.Connect"
+	taskName := "Connecting to MySQL database"
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -92,10 +92,10 @@ func (e *MySQL) Connect() error {
 }
 
 func (e MySQL) Cleardown() error {
-	var funcName string = "mysql.Cleardown"
-	var jobName string = "Cleardown MySQL Database"
+	funcName := "mysql.Cleardown"
+	jobName := "Cleardown MySQL Database"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Cleardown Job
 	var job progress.ProgressJob = &ClearDownJob{}
@@ -104,7 +104,7 @@ func (e MySQL) Cleardown() error {
 }
 
 func (e MySQL) Prepare() error {
-	var funcName string = "mysql.Prepare"
+	funcName := "mysql.Prepare"
 
 	err := e.CreateDatabases()
 	if err != nil {
@@ -120,10 +120,10 @@ func (e MySQL) Prepare() error {
 }
 
 func (e MySQL) CreateDatabases() error {
-	var funcName string = "mysql.CreateDatabases"
-	var jobName string = "Creating MySQL Databases"
+	funcName := "mysql.CreateDatabases"
+	jobName := "Creating MySQL Databases"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Create Databases Job
 	var job progress.ProgressJob = &CreateDatabasesJob{}
@@ -132,10 +132,10 @@ func (e MySQL) CreateDatabases() error {
 }
 
 func (e MySQL) CreateTables() error {
-	var funcName string = "mysql.CreateTables"
-	var jobName string = "Creating MySQL Tables"
+	funcName := "mysql.CreateTables"
+	jobName := "Creating MySQL Tables"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Create Tables Job
 	var job progress.ProgressJob = &CreateTablesJob{}

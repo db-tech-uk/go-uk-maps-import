@@ -7,7 +7,7 @@ import (
 )
 
 func removeLastComma(file string) error {
-	var funcName string = "sqlwriter.removeLastComma"
+	funcName := "sqlwriter.removeLastComma"
 
 	f, err := os.OpenFile(file, os.O_RDWR, os.ModeAppend)
 	if err != nil {

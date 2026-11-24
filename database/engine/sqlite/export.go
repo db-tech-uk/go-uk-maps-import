@@ -3,8 +3,8 @@ package sqlite
 import (
 	"fmt"
 
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/database/types"
 )
@@ -14,10 +14,10 @@ import (
 var targetFolder string = "sql"
 
 func (e SQLite) ExportToMySQLFiles() error {
-	var funcName string = "sqlite.ExportToMySQLFiles"
-	var jobName string = "Exporting SQLite databases to MySQL format files"
+	funcName := "sqlite.ExportToMySQLFiles"
+	jobName := "Exporting SQLite databases to MySQL format files"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Pre flight
 	err := fileutils.MkDir(targetFolder)
@@ -37,10 +37,10 @@ func (e SQLite) ExportToMySQLFiles() error {
 }
 
 func (e SQLite) ExportToSQLiteFiles() error {
-	var funcName string = "mysql.ExportToSQLiteFiles"
-	var jobName string = "Exporting SQLite databases to SQLite format files"
+	funcName := "mysql.ExportToSQLiteFiles"
+	jobName := "Exporting SQLite databases to SQLite format files"
 
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	// Pre flight
 	err := fileutils.MkDir(targetFolder)

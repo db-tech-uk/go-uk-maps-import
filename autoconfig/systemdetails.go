@@ -2,19 +2,20 @@ package autoconfig
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"runtime"
 	"syscall"
 	"time"
 
+	"github.com/db-tech-uk/go-diskbench/diskbench"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-sqlbench/benchmark"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/osutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 	"github.com/pbnjay/memory"
-	"github.com/rockwell-uk/go-diskbench/diskbench"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-sqlbench/benchmark"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/osutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/database"
 	"go-uk-maps-import/database/engine/mysql"
@@ -51,17 +52,17 @@ func (c SystemDetails) String() string {
 		c.OS,
 		c.Arch,
 		c.NumCPU,
-		fmt.Sprintf("%.2f%v", fileutils.ByteSizeConvert(int64(c.TotalMem), "gb"), "gb"),
-		fmt.Sprintf("%.2f%v", fileutils.ByteSizeConvert(int64(c.FreeMem), "gb"), "gb"),
+		fmt.Sprintf("%.2f%v", fileutils.ByteSizeConvert(clampToInt64(c.TotalMem), "gb"), "gb"),
+		fmt.Sprintf("%.2f%v", fileutils.ByteSizeConvert(clampToInt64(c.FreeMem), "gb"), "gb"),
 		c.DiskSpeed,
 		c.ULimit,
 	)
 }
 
 func SetupSystem(importerConfig importer.Config, systemDetails *SystemDetails) error {
-	var funcName string = "autoconfig.SetupSystem"
+	funcName := "autoconfig.SetupSystem"
 
-	var requiredFileHandlesForUnlimited uint64 = uint64(importerConfig.NumShapeFiles * fileHandlesPerShapefile)
+	requiredFileHandlesForUnlimited := uint64(max(importerConfig.NumShapeFiles*fileHandlesPerShapefile, 0))
 
 	var rLimit syscall.Rlimit
 
@@ -109,9 +110,9 @@ func GetSystemDetails() SystemDetails {
 }
 
 func doDiskBench(systemDetails *SystemDetails) {
-	var taskName string = "Benchmarking Disk"
+	taskName := "Benchmarking Disk"
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 	var absPath string
 
@@ -138,9 +139,9 @@ func doDiskBench(systemDetails *SystemDetails) {
 
 func doStorageBench(config importer.Config, platformDetails *PlatformDetail) {
 	var benchmarkResult benchmark.BenchmarkResult
-	var mySQLDetails MySQLDetails = platformDetails.MySQLDetails
-	var pgSQLDetails PgSQLDetails = platformDetails.PgSQLDetails
-	var sqLiteDetails SQLiteDetails = platformDetails.SQLiteDetails
+	mySQLDetails := platformDetails.MySQLDetails
+	pgSQLDetails := platformDetails.PgSQLDetails
+	sqLiteDetails := platformDetails.SQLiteDetails
 
 	// MySQL
 	if mySQLDetails.DriverInstalled && mySQLDetails.ClientInstalled && mySQLDetails.CanConnect {
@@ -194,7 +195,7 @@ func doStorageBench(config importer.Config, platformDetails *PlatformDetail) {
 
 		config.DB.StorageEngine = se
 
-		var benchDBFile string = se.GetDatabasePath("bench")
+		benchDBFile := se.GetDatabasePath("bench")
 		db, err := connectSQLite(spatialiteDriverName, benchDBFile)
 		if err != nil {
 			benchmarkResult = benchmark.BenchmarkResult{
@@ -208,4 +209,14 @@ func doStorageBench(config importer.Config, platformDetails *PlatformDetail) {
 
 		platformDetails.SQLiteDetails.BenchmarkResult = benchmarkResult
 	}
+}
+
+// clampToInt64 converts a byte count to int64, capping it at math.MaxInt64
+// rather than wrapping to a negative value.
+func clampToInt64(v uint64) int64 {
+	if v > math.MaxInt64 {
+		return math.MaxInt64
+	}
+
+	return int64(v)
 }

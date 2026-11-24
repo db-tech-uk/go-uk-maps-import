@@ -5,10 +5,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/types"
@@ -41,12 +41,12 @@ type TableCountsResult struct {
 }
 
 func GetTableCounts(s engine.StorageEngine) (TableCountsResult, error) {
-	var funcName string = "database.GetTableCounts"
-	var jobName string = "Counting database rows"
+	funcName := "database.GetTableCounts"
+	jobName := "Counting database rows"
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
-	var magnitude int = len(types.MapLayers)
+	magnitude := len(types.MapLayers)
 
 	logger.Log(
 		logger.LVL_APP,

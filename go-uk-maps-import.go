@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/autoconfig"
 	"go-uk-maps-import/database"
@@ -68,7 +68,7 @@ func isFlagPassed(name string) bool {
 }
 
 func main() {
-	var funcName string = "main.main"
+	funcName := "main.main"
 
 	// Define and parse flags
 	var v, vv, vvv bool
@@ -214,7 +214,7 @@ func main() {
 	}
 
 	// Base App Config
-	var appConfig *autoconfig.AppConfig = &autoconfig.AppConfig{
+	appConfig := &autoconfig.AppConfig{
 		SystemDetails:   autoconfig.GetSystemDetails(),
 		LogsFolder:      logFolder,
 		ChecksumLogFile: checksumLog,
@@ -349,7 +349,7 @@ func startLoggers(vbs logger.LogLvl) {
 }
 
 func startApp(appConfig *autoconfig.AppConfig) {
-	var funcName string = "main.startApp"
+	funcName := "main.startApp"
 
 	// Startup database connections
 	err := engine.Startup(appConfig.DryRun, &appConfig.ImporterConfig.DB)
@@ -371,7 +371,7 @@ func stopLoggers() {
 }
 
 func stopApp(appConfig *autoconfig.AppConfig) {
-	var funcName string = "main.stopApp"
+	funcName := "main.stopApp"
 
 	// Shutdown database connections
 	err := engine.Shutdown(appConfig.DryRun, appConfig.ImporterConfig.DB)
@@ -398,8 +398,8 @@ func logAppStart() {
 }
 
 func logRuntime(logFile io.Writer) {
-	var end string = timeutils.FormatTime(time.Now())
-	var took time.Duration = timeutils.Took(start)
+	end := timeutils.FormatTime(time.Now())
+	took := timeutils.Took(start)
 
 	logAppStart()
 
@@ -432,7 +432,7 @@ func bailOut(exitCode int) {
 }
 
 func clearLogs() error {
-	var funcName string = "main.clearLogs"
+	funcName := "main.clearLogs"
 
 	err := fileutils.MkDir(logFolder)
 	if err != nil {

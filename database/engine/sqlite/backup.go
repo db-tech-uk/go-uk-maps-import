@@ -1,14 +1,15 @@
 package sqlite
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/stringutils"
 	"github.com/jmoiron/sqlx"
 	"github.com/mattn/go-sqlite3"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/stringutils"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 func doBackup(srcDb *sqlx.DB, srcDbConn *sqlite3.SQLiteConn, srcDbName, destFilename string, usePerPageSteps bool) error {
-	var funcName string = "sqlite.doBackup"
+	funcName := "sqlite.doBackup"
 
 	var e string
 
@@ -47,7 +48,7 @@ func doBackup(srcDb *sqlx.DB, srcDbConn *sqlite3.SQLiteConn, srcDbName, destFile
 	}
 	defer destDB.Close()
 
-	err = destDB.Ping()
+	err = destDB.PingContext(context.Background())
 	if err != nil {
 		e = fmt.Sprintln("failed to connect to the destination database:", err)
 		logger.Log(
@@ -77,7 +78,7 @@ func doBackup(srcDb *sqlx.DB, srcDbConn *sqlite3.SQLiteConn, srcDbName, destFile
 
 	// Determining how many table will be backed up.
 	var srcTableCount int
-	err = srcDb.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'").Scan(&srcTableCount)
+	err = srcDb.QueryRowContext(context.Background(), "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'").Scan(&srcTableCount)
 	if err != nil {
 		e = fmt.Sprintln("failed to check the source table count:", err)
 		logger.Log(
@@ -94,7 +95,7 @@ func doBackup(srcDb *sqlx.DB, srcDbConn *sqlite3.SQLiteConn, srcDbName, destFile
 
 	// Confirm that the destination database is initially empty.
 	var destTableCount int
-	err = destDB.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'").Scan(&destTableCount)
+	err = destDB.QueryRowContext(context.Background(), "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'").Scan(&destTableCount)
 	if err != nil {
 		e = fmt.Sprintln("failed to check the destination table count:", err)
 		logger.Log(

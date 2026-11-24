@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/pointers"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/pointers"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/engine/mysql"

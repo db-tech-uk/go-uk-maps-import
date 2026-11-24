@@ -3,15 +3,15 @@ package sqlwriter
 import (
 	"fmt"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
 )
 
 type FinishSQLFilesJob struct{}
 
 func (j *FinishSQLFilesJob) Setup(jobName string, input interface{}) (*progress.Job, error) {
 	if sqlFiles, ok := input.([]string); ok {
-		var tasks []*progress.Task
+		tasks := make([]*progress.Task, 0, len(sqlFiles))
 		for _, sqlFile := range sqlFiles {
 			tasks = append(tasks, &progress.Task{
 				ID:        sqlFile,

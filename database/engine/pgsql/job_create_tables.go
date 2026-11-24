@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-progress/progress"
 
 	"go-uk-maps-import/database/types"
 )
@@ -15,7 +15,7 @@ import (
 type CreateTablesJob struct{}
 
 func (j *CreateTablesJob) Setup(jobName string, input interface{}) (*progress.Job, error) {
-	var tasks []*progress.Task
+	tasks := make([]*progress.Task, 0, len(types.MapLayers)*len(nationalgrid.NationalGridSquares))
 	for layerType := range types.MapLayers {
 		for square := range nationalgrid.NationalGridSquares {
 			tasks = append(tasks, &progress.Task{
@@ -32,7 +32,7 @@ func (j *CreateTablesJob) Setup(jobName string, input interface{}) (*progress.Jo
 
 func (j *CreateTablesJob) Run(job *progress.Job, input interface{}) (interface{}, error) {
 	if e, ok := input.(PgSQL); ok {
-		var wg *waitgroup.WaitGroup = waitgroup.New()
+		wg := waitgroup.New()
 
 		for _, layerType := range types.MapLayers.Ordered() {
 			fields := types.MapLayers[layerType]

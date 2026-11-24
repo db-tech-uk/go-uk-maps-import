@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/db-tech-uk/go-logger/logger"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/engine/mysql"

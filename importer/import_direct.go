@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rockwell-uk/datastore"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-nationalgrid"
-	"github.com/rockwell-uk/go-shpconvert/shpconvert"
+	"github.com/db-tech-uk/datastore"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-nationalgrid"
+	"github.com/db-tech-uk/go-shpconvert/shpconvert"
 	"github.com/twpayne/go-geos"
 
 	"go-uk-maps-import/database/engine"
@@ -91,7 +91,7 @@ func saveBatchInserts(batchInsertsKey string, batchInserts map[string]batchInser
 }
 
 func runInserts(se engine.StorageEngine, batchInsertsKey string) {
-	var funcName string = "importer.runInserts"
+	funcName := "importer.runInserts"
 
 	batchInserts := loadBatchInserts(batchInsertsKey)
 
@@ -128,7 +128,7 @@ func runInserts(se engine.StorageEngine, batchInsertsKey string) {
 
 		_, err := se.GetDB(dbName).NamedExec(query, inserts)
 		if err != nil {
-			var msg string = fmt.Sprintf("[%v.%v]:\n%v\n\n %+v\n\n (%+v)\n\n %+v\n\n", dbName, tableName, err.Error(), query, inserts, dbFieldsMap)
+			msg := fmt.Sprintf("[%v.%v]:\n%v\n\n %+v\n\n (%+v)\n\n %+v\n\n", dbName, tableName, err.Error(), query, inserts, dbFieldsMap)
 			logger.Log(
 				logger.LVL_FATAL,
 				err.Error(),

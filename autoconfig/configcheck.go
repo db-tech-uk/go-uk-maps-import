@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/fileutils"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/importer"
@@ -46,10 +46,10 @@ func (c ConfigCheckResults) String() string {
 }
 
 func ConfigCheck(appConfig *AppConfig) (ConfigCheckResults, error) {
-	var funcName string = "autoconfig.ConfigCheck"
-	var taskName string = "Performing Config Check"
+	funcName := "autoconfig.ConfigCheck"
+	taskName := "Performing Config Check"
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 	var configCheckResults ConfigCheckResults
 
@@ -80,7 +80,7 @@ func ConfigCheck(appConfig *AppConfig) (ConfigCheckResults, error) {
 }
 
 func PopulatePlatformDetail(appConfig *AppConfig) ConfigCheckResults {
-	var taskName string = "Populating Platform Detail"
+	taskName := "Populating Platform Detail"
 
 	var configCheckResults ConfigCheckResults
 
@@ -90,8 +90,8 @@ func PopulatePlatformDetail(appConfig *AppConfig) ConfigCheckResults {
 	)
 
 	// Assign current config to local variables
-	var userDBConfig engine.SEConfig = appConfig.ImporterConfig.DB
-	var userImporterConfig importer.Config = appConfig.ImporterConfig
+	userDBConfig := appConfig.ImporterConfig.DB
+	userImporterConfig := appConfig.ImporterConfig
 
 	if userDBConfig.Engine == nil {
 		configCheckResults.Errors = append(configCheckResults.Errors, "The dbengine flag must be provided")
@@ -160,15 +160,15 @@ func GetDatabaseConfig(platformDetail PlatformDetail, config importer.Config) (P
 }
 
 func checkConfig(appConfig *AppConfig) (ConfigCheckResults, error) {
-	var funcName string = "autoconfig.checkConfig"
+	funcName := "autoconfig.checkConfig"
 	var results ConfigCheckResults
 
 	// Assign current config to local variables
-	var platformDetail PlatformDetail = appConfig.PlatformDetail
-	var mySQLDetails MySQLDetails = appConfig.PlatformDetail.MySQLDetails
-	var pgSQLDetails PgSQLDetails = appConfig.PlatformDetail.PgSQLDetails
-	var sqLiteDetails SQLiteDetails = appConfig.PlatformDetail.SQLiteDetails
-	var importerConfig importer.Config = appConfig.ImporterConfig
+	platformDetail := appConfig.PlatformDetail
+	mySQLDetails := appConfig.PlatformDetail.MySQLDetails
+	pgSQLDetails := appConfig.PlatformDetail.PgSQLDetails
+	sqLiteDetails := appConfig.PlatformDetail.SQLiteDetails
+	importerConfig := appConfig.ImporterConfig
 
 	// Check Connectivity
 	switch platformDetail.RequestedEngine {

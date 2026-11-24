@@ -3,8 +3,8 @@ package autoconfig
 import (
 	"fmt"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/importer"
@@ -37,7 +37,7 @@ const (
 
 func GetImporterConfig(platformDetail *PlatformDetail, systemDetails SystemDetails, importerConfig importer.Config) importer.Config {
 	// AutoConfigure Importer Options
-	var importerAutoConfig importer.Config = importerConfig
+	importerAutoConfig := importerConfig
 
 	importerAutoConfig.Concurrent = concurrencyFlagEnabled(systemDetails)
 	importerAutoConfig.Unlimited = unlimitedFlagEnabled(platformDetail, systemDetails, importerConfig)
@@ -49,7 +49,7 @@ func GetImporterConfig(platformDetail *PlatformDetail, systemDetails SystemDetai
 
 func concurrencyFlagEnabled(systemDetails SystemDetails) bool {
 	availableCPUs := systemDetails.NumCPU
-	var concurrencyFlagEnabled bool = availableCPUs > minCPUForConcurrency
+	concurrencyFlagEnabled := availableCPUs > minCPUForConcurrency
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -68,13 +68,13 @@ func concurrencyFlagEnabled(systemDetails SystemDetails) bool {
 }
 
 func unlimitedFlagEnabled(platformDetail *PlatformDetail, systemDetails SystemDetails, importerConfig importer.Config) bool {
-	var sufficientCPUCores bool = (systemDetails.NumCPU >= minCPUForUnlimited)
-	var sufficientFileHandles bool = (systemDetails.ULimit >= (importerConfig.NumShapeFiles * fileHandlesPerShapefile))
+	sufficientCPUCores := (systemDetails.NumCPU >= minCPUForUnlimited)
+	sufficientFileHandles := (systemDetails.ULimit >= (importerConfig.NumShapeFiles * fileHandlesPerShapefile))
 
 	platformDetail.SufficientCPUCores = &sufficientCPUCores
 	platformDetail.SufficientFileHandles = &sufficientFileHandles
 
-	var unlimitedFlagEnabled bool = sufficientCPUCores && sufficientFileHandles
+	unlimitedFlagEnabled := sufficientCPUCores && sufficientFileHandles
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -95,13 +95,13 @@ func unlimitedFlagEnabled(platformDetail *PlatformDetail, systemDetails SystemDe
 }
 
 func useFilesFlagEnabled(platformDetail *PlatformDetail, systemDetails SystemDetails) bool {
-	var dbIsSlow bool = databaseIsSlow(*platformDetail)
-	var fsIsSlow bool = filesystemIsSlow(systemDetails)
+	dbIsSlow := databaseIsSlow(*platformDetail)
+	fsIsSlow := filesystemIsSlow(systemDetails)
 
 	platformDetail.DBIsSlow = &dbIsSlow
 	platformDetail.FsIsSlow = &fsIsSlow
 
-	var useFilesFlagEnabled bool = dbIsSlow && !fsIsSlow && platformDetail.MySQLDetails.ClientInstalled
+	useFilesFlagEnabled := dbIsSlow && !fsIsSlow && platformDetail.MySQLDetails.ClientInstalled
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -122,8 +122,8 @@ func useFilesFlagEnabled(platformDetail *PlatformDetail, systemDetails SystemDet
 }
 
 func lowMemoryFlagEnabled(systemDetails SystemDetails) bool {
-	var freeMemoryGb float64 = fileutils.ByteSizeConvert(int64(systemDetails.FreeMem), "gb")
-	var lowMemory bool = freeMemoryGb < lowMemoryTidemark
+	freeMemoryGb := fileutils.ByteSizeConvert(clampToInt64(systemDetails.FreeMem), "gb")
+	lowMemory := freeMemoryGb < lowMemoryTidemark
 
 	logger.Log(
 		logger.LVL_INTERNAL,
@@ -191,7 +191,7 @@ func databaseIsSlow(platformDetail PlatformDetail) bool {
 }
 
 func filesystemIsSlow(systemDetails SystemDetails) bool {
-	var filesystemIsSlow bool = systemDetails.DiskSpeed.Writes < fsBenchTidemark
+	filesystemIsSlow := systemDetails.DiskSpeed.Writes < fsBenchTidemark
 
 	logger.Log(
 		logger.LVL_INTERNAL,

@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/timeutils"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/timeutils"
 
 	"go-uk-maps-import/importer"
 )
+
+const notChecked = "not checked"
 
 type AppConfig struct {
 	SystemDetails   SystemDetails
@@ -32,22 +34,22 @@ type PlatformDetail struct {
 }
 
 func (p PlatformDetail) String() string {
-	var sufficientCPUCores string = "not checked"
+	sufficientCPUCores := notChecked
 	if p.SufficientCPUCores != nil {
 		sufficientCPUCores = fmt.Sprintf("%v", *p.SufficientCPUCores)
 	}
 
-	var sufficientFileHandles string = "not checked"
+	sufficientFileHandles := notChecked
 	if p.SufficientFileHandles != nil {
 		sufficientFileHandles = fmt.Sprintf("%v", *p.SufficientFileHandles)
 	}
 
-	var dbIsSlow string = "not checked"
+	dbIsSlow := notChecked
 	if p.SufficientCPUCores != nil {
 		dbIsSlow = fmt.Sprintf("%v", *p.DBIsSlow)
 	}
 
-	var fsIsSlow string = "not checked"
+	fsIsSlow := notChecked
 	if p.FsIsSlow != nil {
 		fsIsSlow = fmt.Sprintf("%v", *p.FsIsSlow)
 	}
@@ -72,10 +74,10 @@ func (p PlatformDetail) String() string {
 }
 
 func AutoConfigure(appConfig *AppConfig) error {
-	var funcName string = "autoconfig.AutoConfigure"
-	var taskName string = "App Auto Config"
+	funcName := "autoconfig.AutoConfigure"
+	taskName := "App Auto Config"
 
-	var start time.Time = time.Now()
+	start := time.Now()
 	var took time.Duration
 
 	logger.Log(
@@ -84,9 +86,9 @@ func AutoConfigure(appConfig *AppConfig) error {
 	)
 
 	// Assign current config to local variables
-	var userImporterConfig importer.Config = appConfig.ImporterConfig
-	var systemDetails SystemDetails = appConfig.SystemDetails
-	var platformDetail *PlatformDetail = &appConfig.PlatformDetail
+	userImporterConfig := appConfig.ImporterConfig
+	systemDetails := appConfig.SystemDetails
+	platformDetail := &appConfig.PlatformDetail
 
 	// Attempt to set necessary system parameters
 	err := SetupSystem(userImporterConfig, &systemDetails)
@@ -101,7 +103,7 @@ func AutoConfigure(appConfig *AppConfig) error {
 	doStorageBench(userImporterConfig, platformDetail)
 
 	// Check / ReWrite the Config
-	var importerConfig importer.Config = GetImporterConfig(platformDetail, systemDetails, userImporterConfig)
+	importerConfig := GetImporterConfig(platformDetail, systemDetails, userImporterConfig)
 
 	// Save AutoConfigured Values
 	appConfig.ImporterConfig = importerConfig

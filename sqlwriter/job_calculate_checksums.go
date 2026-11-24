@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/rockwell-uk/go-progress/progress"
-	"github.com/rockwell-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-progress/progress"
+	"github.com/db-tech-uk/go-utils/fileutils"
 
 	"go-uk-maps-import/filelogger"
 )
@@ -14,7 +14,7 @@ type CalculateChecksumsJob struct{}
 
 func (j *CalculateChecksumsJob) Setup(jobName string, input interface{}) (*progress.Job, error) {
 	if sqlFiles, ok := input.([]string); ok {
-		var tasks []*progress.Task
+		tasks := make([]*progress.Task, 0, len(sqlFiles))
 		for _, sqlFile := range sqlFiles {
 			tasks = append(tasks, &progress.Task{
 				ID:        sqlFile,

@@ -1,4 +1,3 @@
-//nolint:gci
 package database
 
 import (
@@ -6,13 +5,12 @@ import (
 	"sort"
 	"strings"
 
-	"go-uk-maps-import/database/engine"
-	"go-uk-maps-import/rates"
-
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-utils/sliceutils"
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-utils/sliceutils"
+	"go-uk-maps-import/database/engine"
+	"go-uk-maps-import/rates"
 )
 
 type Range struct {
@@ -22,7 +20,7 @@ type Range struct {
 
 func RowCountsCheck(dataFolder string, ratesInfo []rates.RateInfo, dbCounts map[string]int, getTableNameFunc func(string) string) []string {
 	var mismatches = []string{}
-	var ranges map[string]Range = getExpectedRange(ratesInfo)
+	ranges := getExpectedRange(ratesInfo)
 
 	for _, rateInfo := range ratesInfo {
 		shapeFileShortName := strings.ReplaceAll(rateInfo.ShapeFile, dataFolder, "")
@@ -55,7 +53,7 @@ func RowCountsCheck(dataFolder string, ratesInfo []rates.RateInfo, dbCounts map[
 
 func LogRowCountChecks(se engine.StorageEngine, datafolder string, rateInfo []rates.RateInfo) {
 	var mismatches []string
-	var msg string = "All rowcounts are as expected"
+	msg := "All rowcounts are as expected"
 
 	tableCountsResult, _ := GetTableCounts(se)
 

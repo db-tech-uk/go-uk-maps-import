@@ -3,14 +3,14 @@ package pgsql
 import (
 	"fmt"
 
-	"github.com/rockwell-uk/csync/waitgroup"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-progress/progress"
+	"github.com/db-tech-uk/csync/waitgroup"
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-progress/progress"
 )
 
 func bulkAction(job *progress.Job, input interface{}, sqlCommandTpl string) (interface{}, error) {
 	if e, ok := input.(PgSQL); ok {
-		var wg *waitgroup.WaitGroup = waitgroup.New()
+		wg := waitgroup.New()
 
 		// Do the work
 		for layerType, t := range job.Tasks {

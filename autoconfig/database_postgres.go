@@ -1,12 +1,13 @@
 package autoconfig
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/db-tech-uk/go-logger/logger"
+	"github.com/db-tech-uk/go-sqlbench/benchmark"
+	"github.com/db-tech-uk/go-utils/osutils"
 	"github.com/jmoiron/sqlx"
-	"github.com/rockwell-uk/go-logger/logger"
-	"github.com/rockwell-uk/go-sqlbench/benchmark"
-	"github.com/rockwell-uk/go-utils/osutils"
 
 	"go-uk-maps-import/database/engine"
 	"go-uk-maps-import/database/engine/pgsql"
@@ -43,9 +44,9 @@ func GetPgSQLDetails(config importer.Config) PgSQLDetails {
 
 	cfg := GetPgSQLConfig(config.DB)
 
-	var driverInstalled bool = checkPgSQLDriverInstalled()
-	var clientInstalled bool = checkPgSQLClientInstalled()
-	var canConnect bool = checkPgSQLConnectivity(cfg)
+	driverInstalled := checkPgSQLDriverInstalled()
+	clientInstalled := checkPgSQLClientInstalled()
+	canConnect := checkPgSQLConnectivity(cfg)
 	var connectionError *string
 
 	if driverInstalled && clientInstalled && canConnect {
@@ -93,14 +94,14 @@ func GetPgSQLConfig(userConfig engine.SEConfig) pgsql.PgSQLConfig {
 }
 
 func connectPgSQL(dbConfig pgsql.PgSQLConfig) (*sqlx.DB, error) {
-	var funcName string = "autoconfig.connectPgSQL"
+	funcName := "autoconfig.connectPgSQL"
 
 	db, err := sqlx.Open("postgres", dbConfig.DSN())
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}
 
-	err = db.Ping()
+	err = db.PingContext(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("%v: %v", funcName, err.Error())
 	}

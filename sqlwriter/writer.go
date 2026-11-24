@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/rockwell-uk/go-utils/fileutils"
+	"github.com/db-tech-uk/go-utils/fileutils"
 )
 
 type SQLLine struct {
@@ -66,7 +66,7 @@ func monitorLoop() {
 }
 
 func getSQLFile(dbName, tableName string) (*os.File, error) {
-	var funcName string = "sqlwriter.getSQLFile"
+	funcName := "sqlwriter.getSQLFile"
 
 	folderPath := fmt.Sprintf("%s/%s", Folder, dbName)
 	err := fileutils.MkDir(folderPath)
