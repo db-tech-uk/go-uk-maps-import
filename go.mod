@@ -15,7 +15,7 @@ require (
 	github.com/db-tech-uk/go-utils v1.0.1
 	github.com/db-tech-uk/shapefile v1.0.1
 	github.com/db-tech-uk/uiprogress v1.0.1
-	github.com/go-sql-driver/mysql v1.8.1
+	github.com/go-sql-driver/mysql v1.10.2
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.12.3
 	github.com/mattn/go-sqlite3 v1.14.22
@@ -26,7 +26,7 @@ require (
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
+	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/db-tech-uk/go-draw v1.0.1 // indirect
 	github.com/db-tech-uk/go-geos-draw v1.0.1 // indirect
 	github.com/db-tech-uk/go-text v1.1.0 // indirect
