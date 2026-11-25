@@ -18,7 +18,7 @@ require (
 	github.com/go-sql-driver/mysql v1.10.2
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.12.3
-	github.com/mattn/go-sqlite3 v1.14.22
+	github.com/mattn/go-sqlite3 v1.14.53
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58
 	github.com/schollz/sqlite3dump v1.3.1
 	github.com/twpayne/go-geos v0.23.0
